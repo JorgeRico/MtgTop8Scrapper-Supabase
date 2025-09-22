@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  scrapper:
+    container_name: scrapper
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    tty: true
+    volumes:
+      - ./:/app
+    networks:
+      - app-network
+
+volumes:
+  app_db_volume:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network

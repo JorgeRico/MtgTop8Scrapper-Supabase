@@ -1,0 +1,4 @@
+beautifulsoup4
+Unidecode
+python-dotenv
+supabase

@@ -1,0 +1,5 @@
+leagueTable     = 'leagues'
+tournamentTable = 'tournaments'
+deckTable       = 'decks'
+cardsTable      = 'cards'
+playerTable     = 'players'
