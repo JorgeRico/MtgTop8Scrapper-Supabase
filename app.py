@@ -1,9 +1,26 @@
 from data.tournaments import tournaments
-from data.tableNames import tournamentTable
 from classes.league import League
 from functions.functions import Scrapping
 from classes.tournament import Tournament
 from classes.top8 import Top8
+from classes.card import Card
+
+# update card image url
+def updateBlankImgUrls():
+    card  = Card()
+    check = Scrapping()
+
+    result = card.checkCardsImgUrls()
+    for item in result:
+        print('    - Cards updated: %s' %item.get('name'))
+
+        url  = check.getScryfallUrlCardData(item.get('name'))
+        url  = check.replaceBlankSpaceUrl(url)
+        soup = check.getJsonSoup(url)
+        
+        imgUrl = card.getImageUrl(soup)
+        card.updateDeckCardsImgUrl(item.get('name'), imgUrl)
+
 
 # scrapping data
 def scrapping(id, name, idLeague):
@@ -44,3 +61,6 @@ def main(tournaments):
             scrapping(str(id), item['name'], item['league'])
 
 main(tournaments)
+
+# run more than one time - supabase python has limit on select query - not group by
+# updateBlankImgUrls()

@@ -48,3 +48,6 @@ class Scrapping:
         cardName = cardName.replace('&', '')
 
         return cardName
+
+    def replaceBlankSpaceUrl(self, url):
+        return url.replace(' ', '%20')

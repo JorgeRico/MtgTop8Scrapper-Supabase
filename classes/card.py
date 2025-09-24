@@ -1,7 +1,8 @@
 from functions.functions import Scrapping
-
+from functions.db import Db
+from data.tableNames import cardsTable
 class Card:
-    def __init__(self, num, name, idDeck, board):
+    def __init__(self, num = None, name = None, idDeck = None, board = None):
         self.num      = num
         self.name     = name
         self.board    = board
@@ -36,7 +37,7 @@ class Card:
         cardName      = soup.convertCardName(cardName)
         soup          = soup.getJsonSoup(soup.getScryfallUrlCardData(cardName))
         self.cardType = self.getCardTypeText(soup)
-        self.imgUrl   = self.setImageUrl(soup)
+        self.imgUrl   = self.getImageUrl(soup)
         
     # get cardType
     def getCardTypeText(self, soup):
@@ -56,9 +57,22 @@ class Card:
             return 'instant'   
 
     # get image url
-    def setImageUrl(self, soup):
+    def getImageUrl(self, soup):
         try:
             return soup['image_uris']['normal']
         except Exception:
             # double sided cards
             return soup['card_faces'][0]['image_uris']['normal']
+        
+    # Get empty imgUrl rows - supabase python has limit on select query - not group by
+    def checkCardsImgUrls(self):
+        db       = Db()
+        supabase = db.getSupabase()
+        response = supabase.table(cardsTable).select("name").filter('imgUrl','is', 'null').execute()
+
+        return response.data
+    
+    # update cards img url
+    def updateDeckCardsImgUrl(self, name, url):
+        db = Db()
+        db.update(cardsTable, {'imgUrl': url}, 'name', name)
