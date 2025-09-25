@@ -37,6 +37,7 @@ def scrapping(id, name, idLeague):
     
     if (len(result) == 0):
         idTournament = tournament.getTournamentData(soup, id, name, idLeague)
+        idTournament = idTournament[0].get('id')
     else:
         idTournament = result[0].get('id')
 
@@ -44,7 +45,7 @@ def scrapping(id, name, idLeague):
     top.setTop8Players(soup, idTournament)
 
     # decks and cards
-    top.setTop8PlayersDecks(idTournament)
+    top.setTop8PlayersDecks()
 
 
 

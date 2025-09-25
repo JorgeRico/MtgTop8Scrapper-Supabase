@@ -30,7 +30,9 @@ class Tournament():
             "players"      : players
         }
         
-        db.insert(tournamentTable, item)
+        result = db.insert(tournamentTable, item)
+
+        return result.data
     
     # check if exists tournament
     def existsTournamentOnDB(self, idTournament):

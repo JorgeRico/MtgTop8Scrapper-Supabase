@@ -10,6 +10,7 @@ class Player:
         self.cards        = None
         self.idPlayer     = idPlayer
         self.idTournament = idTournament
+        self.idDeck       = None
     
     def getPlayerNum(self):
         return str(self.num)
@@ -19,9 +20,12 @@ class Player:
     
     def getPlayerDeckName(self):
         return str(self.deckName)
+
+    def getPlayerIdDeck(self):
+        return self.idDeck
     
-    def getPlayerDeckHref(self):
-        return str(self.deckHref)
+    def setPlayerIdDeck(self, idDeck):
+        self.idDeck = idDeck
     
     def getPlayerDeck(self):
         return self.cards
@@ -48,8 +52,8 @@ class Player:
         item = {
             "name"         : self.getPlayerName(),
             "position"     : self.getPlayerNum(),
-            "idTournament" : self.getPlayerTournament(),
-            "deckHref"     : self.getDeckHref()
+            "idTournament" : self.getPlayerTournament()
+            # "deckHref"     : self.getDeckHref()
         }
 
         try:
@@ -66,6 +70,7 @@ class Player:
 
         try:
             db.update(playerTable, item, 'id', idPlayer)
+            self.setPlayerIdDeck(idDeck)
         except Exception:
             return None
 
@@ -75,7 +80,7 @@ class Player:
         supabase = db.getSupabase()
 
         try:
-            response = supabase.table(playerTable).select('id').eq('name', self.getPlayerName()).eq('position', self.getPlayerNum()).eq('idTournament', self.getPlayerTournament()).execute()
+            response = supabase.table(playerTable).select('id, idDeck').eq('name', self.getPlayerName()).eq('position', self.getPlayerNum()).eq('idTournament', self.getPlayerTournament()).execute()
 
             return response.data
         except Exception:

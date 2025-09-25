@@ -15,7 +15,7 @@ class Top8:
     # save players on list
     def setTopPlayer(self, playerName, deckHref, deckName, idTournament):
         scrapping = Scrapping()
-        if playerName != '' and deckHref != '':
+        if playerName != '' and deckHref != '' and deckName != '' and idTournament != '':
             num    = len(self.topPlayers)
             player = Player(num+1, playerName, scrapping.getPlayerDeckUrl(deckHref), idTournament, deckName)
             self.topPlayers.append(player)
@@ -58,7 +58,7 @@ class Top8:
 
     # save deck
     def saveDeck(self, item, idPlayer):
-        deck = Deck()
+        deck     = Deck()
         response = deck.saveDeck(item.getPlayerDeckName())
         item.savePlayerIdDeck(response[0].get('id'), idPlayer)
 
@@ -68,50 +68,62 @@ class Top8:
         for item in self.topPlayers:
             idPlayer = item.existsPlayerOnDB()
             
-            try:
-                if (len(idPlayer) == 0):
-                    print('         - Player saved on DB: %s - %s' %(item.getPlayerNum(),item.getPlayerName()))
-                    idPlayerInserted = item.savePlayer()
-                    self.saveDeck(item, idPlayerInserted[0].get('id'))
-                else:
-                    print('         - Players is on DB: %s - %s' %(item.getPlayerNum(),item.getPlayerName()))
-            except Exception:
-                if (idPlayer is None):
-                    print('         - Player saved on DB: %s - %s' %(item.getPlayerNum(),item.getPlayerName()))
-                    idPlayerInserted = item.savePlayer()
-                    self.saveDeck(item, idPlayerInserted[0].get('id'))
-                else:
-                    print('         - Players is on DB: %s - %s' %(item.getPlayerNum(),item.getPlayerName()))
+            if idPlayer is None:
+                add = True
+            elif (len(idPlayer) == 0):
+                add = True
+            else:
+                add = False
+                if idPlayer[0].get('idDeck') is not None:
+                    item.setPlayerIdDeck(idPlayer[0].get('idDeck'))
+                
+            if add == True:
+                self.saveItemPlayer(item)
+            else:
+                self.existItemPlayer(item, idPlayer)
+            
+    def saveItemPlayer(self, item):
+        print('         - Player saved on DB: %s - %s' %(item.getPlayerNum(),item.getPlayerName()))
+        idPlayerInserted = item.savePlayer()
+        try:
+            item.setIdPlayer(idPlayerInserted[0].get('id'))
+            self.saveDeck(item, idPlayerInserted[0].get('id'))
+        except Exception:
+            idPlayerInserted = item.savePlayer()
+            item.setIdPlayer(idPlayerInserted[0].get('id'))
+            self.saveDeck(item, idPlayerInserted[0].get('id'))
+
+
+    def existItemPlayer(self, item, idPlayer):
+        print('         - Players is on DB: %s - %s' %(item.getPlayerNum(),item.getPlayerName()))
+        item.setIdPlayer(idPlayer[0].get('id'))
 
     # top8 decks saved
-    def setTop8PlayersDecks(self, idTournament):
-        response = self.getTop8PlayersFromDb(idTournament)
+    def setTop8PlayersDecks(self):
         print('       * Decks:')
-        for item in response:
-            if item.get('decks').get('cardsLoaded') == False:
+        for item in self.topPlayers:
+            if item.idDeck is None:
+                self.saveDeck(item, item.idPlayer)
+
+            result = self.playerHasIdDeckOnDB(item.idPlayer)
+            
+            if result[0].get('decks').get('cardsLoaded') == False:
                 deck = Deck()
                 # delete previous results before upload all deck
-                deck.deleteDeckCards(item.get('idDeck'))
+                deck.deleteDeckCards(result[0].get('idDeck'))
                 # scrap deck
                 soup = Scrapping()
-                soup = soup.getSoup(item.get('deckHref'))
+                soup = soup.getSoup(item.deckHref)
                 
-                deck.getDeck(item.get('idDeck'), soup)
-                deck.updateCardsLoaded(item.get('idDeck'))
-                print('         - Deck saved on DB: %s - %s' %(item.get('decks').get('name'), item.get('name')))
+                deck.getDeck(result[0].get('idDeck'), soup)
+                deck.updateCardsLoaded(result[0].get('idDeck'))
+                print('         - Deck saved on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
             else:
-                print('         - Deck is on DB: %s - %s' %(item.get('decks').get('name'), item.get('name')))
-
-    # get players from DB
-    def getTop8PlayersFromDb(self, idTournament):
-        db       = Db()
-        response = db.getTableDataQueryWhere(playerTable, 'id, name, idDeck, deckHref, decks(cardsLoaded, name)', 'idTournament', idTournament)
-
-        return response
+                print('         - Deck is on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
     
     # check if player has deck on db
     def playerHasIdDeckOnDB(self, idPlayer):
         db       = Db()
-        response = db.getTableDataQueryWhere(playerTable, 'idDeck', 'id', idPlayer)
+        response = db.getTableDataQueryWhere(playerTable, 'id, name, idDeck, decks(cardsLoaded, name)', 'id', idPlayer)
 
         return response
