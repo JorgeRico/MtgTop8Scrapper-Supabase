@@ -53,7 +53,6 @@ class Deck:
                 "board"    : card.getBoard(),
                 "cardType" : card.getCardType(),
                 "imgUrl"   : card.getImgUrl()
-                # falta la imagen
             }
 
             db.insert(cardsTable, item)
@@ -63,6 +62,12 @@ class Deck:
         db = Db()
 
         db.update(deckTable, {'cardsLoaded': True}, 'id', idDeck)
+
+    # save player on DB
+    def updateDeckPlayer(self, idDeck, idPlayer):
+        db = Db()
+
+        db.update(deckTable, {'idplayer': idPlayer}, 'id', idDeck)
 
     # save player idDeck on DB
     def deleteDeckCards(self, idDeck):

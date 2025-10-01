@@ -117,6 +117,8 @@ class Top8:
                 
                 deck.getDeck(result[0].get('idDeck'), soup)
                 deck.updateCardsLoaded(result[0].get('idDeck'))
+                deck.updateDeckPlayer(result[0].get('idDeck'), item.idPlayer)
+                
                 print('         - Deck saved on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
             else:
                 print('         - Deck is on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))

@@ -36,7 +36,8 @@ class Tournament():
     
     # check if exists tournament
     def existsTournamentOnDB(self, idTournament):
-        db       = Db()
+        db = Db()
+        
         response = db.getTableDataQueryWhere(tournamentTable, 'id', 'idTournament', idTournament)
 
         return response
