@@ -11,10 +11,14 @@ def updateBlankImgUrls():
     check = Scrapping()
 
     result = card.checkCardsImgUrls()
+
+    print('   - Updating blank imgUrls on cards table')
     for item in result:
         print('    - Cards updated: %s' %item.get('name'))
+        # bypass utf-8 error on scryfall website scrapping
+        name = check.convertCardName(item.get('name'))
 
-        url  = check.getScryfallUrlCardData(item.get('name'))
+        url  = check.getScryfallUrlCardData(name)
         url  = check.replaceBlankSpaceUrl(url)
         soup = check.getJsonSoup(url)
         
