@@ -67,7 +67,7 @@ class Deck:
     def updateDeckPlayer(self, idDeck, idPlayer):
         db = Db()
 
-        db.update(deckTable, {'idplayer': idPlayer}, 'id', idDeck)
+        db.update(deckTable, {'idPlayer': idPlayer}, 'id', idDeck)
 
     # save player idDeck on DB
     def deleteDeckCards(self, idDeck):
