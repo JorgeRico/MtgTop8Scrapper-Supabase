@@ -3,11 +3,13 @@ import urllib.request
 from bs4 import BeautifulSoup
 import json
 import unidecode
+import urllib3
 
 class Scrapping:
     def __init__(self):
         self.baseurl  = 'https://www.mtgtop8.com/event'
         self.scryfall = 'https://api.scryfall.com/cards'
+        self.headers  = { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json' }
 
     # tournament url
     def getEventUrl(self, url):
@@ -21,9 +23,10 @@ class Scrapping:
         return soup
     
     # get soup on json format
+    # for scryfall api
     def getJsonSoup(self, url):
-        page = urllib.request.urlopen(url)
-        soup = BeautifulSoup(page, 'html.parser')
+        page = urllib3.request("GET", url, headers=self.headers)
+        soup = BeautifulSoup(page.data, 'html.parser')
         data = json.loads(soup.text.encode('utf-8'))
 
         return data
