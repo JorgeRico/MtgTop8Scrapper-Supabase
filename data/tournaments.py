@@ -16,8 +16,15 @@ tournaments = [
     {
         'league' : 25,
         'name'   : 'Lliga Minoria',
-        'ids'    :  [ 79359 ],
+        'ids'    :  [ 81166, 79359 ],
         'year'   : 2026,
         'isLegacy' : 1
     },
+    {
+        'league' : 26,
+        'name'   : 'Lliga del Valles',
+        'ids'    :  [ 81664 ],
+        'year'   : 2026,
+        'isLegacy' : 1
+    }
 ]
