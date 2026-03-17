@@ -9,7 +9,7 @@ tournaments = [
     {
         'league'   : 24,
         'name'     : 'LCL Ingenio',
-        'ids'      : [ 80600, 78939 ],
+        'ids'      : [ 80600, 78939, 81915 ],
         'year'     : 2026,
         'isLegacy' : 1
     },
