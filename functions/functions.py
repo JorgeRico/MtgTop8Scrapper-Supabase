@@ -17,10 +17,12 @@ class Scrapping:
 
     # get soup
     def getSoup(self, url):
-        page = urllib.request.urlopen(url)
-        soup = BeautifulSoup(page, 'html.parser')
-
-        return soup
+        try:
+            page = urllib.request.urlopen(url)
+            soup = BeautifulSoup(page, 'html.parser')
+            return soup
+        except Exception as error:
+            print(error)
     
     # get soup on json format
     # for scryfall api
