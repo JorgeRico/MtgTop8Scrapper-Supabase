@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import json
 import unidecode
 import urllib3
+import time
 
 class Scrapping:
     def __init__(self):
@@ -27,6 +28,8 @@ class Scrapping:
     # get soup on json format
     # for scryfall api
     def getJsonSoup(self, url):
+        # bypass to scryfall block
+        time.sleep(1)
         page = urllib3.request("GET", url, headers=self.headers)
         soup = BeautifulSoup(page.data, 'html.parser')
         data = json.loads(soup.text.encode('utf-8'))
@@ -39,7 +42,8 @@ class Scrapping:
     
     # card scryfall url
     def getScryfallUrlCardData(self, name):
-        return self.scryfall + '/named?exact=' + name
+        # before we use "exact", now "fuzzy"
+        return self.scryfall + '/named?fuzzy=' + name
     
     # extrange names
     def convertCardName(self, cardName):

@@ -23,7 +23,7 @@ tournaments = [
     {
         'league' : 26,
         'name'   : 'Lliga del Valles',
-        'ids'    :  [ 81664 ],
+        'ids'    :  [ 83134, 81664 ],
         'year'   : 2026,
         'isLegacy' : 1
     }
