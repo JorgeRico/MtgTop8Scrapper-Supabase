@@ -16,6 +16,7 @@ class Top8:
     # save players on list
     def setTopPlayer(self, playerName, deckHref, deckName, idTournament):
         scrapping = Scrapping()
+
         if playerName != '' and deckHref != '' and deckName != '' and idTournament != '':
             num    = len(self.topPlayers)
             player = Player(num+1, playerName, scrapping.getPlayerDeckUrl(deckHref), idTournament, deckName)
@@ -36,20 +37,26 @@ class Top8:
                     if num == 0:
                         deckName = link.text
                         deckHref = link.get('href')
-
                     if num == 1:
-                        playerName = link.text
-                        # print("%s - %s" %(playerName, soup.original_encoding))
-                        if (soup.original_encoding == 'cp850'):
-                            name = playerName.encode('cp850')
-                            playerName = name.decode(encoding="ISO-8859-1",errors="ignore")
-                        if(soup.original_encoding == "windows-1250"):
-                            name = playerName.encode('windows-1250')
-                            playerName = name.decode(encoding="ISO-8859-1",errors="ignore")
+                        playerName = self.getPlayerName(link, soup)
+
                     num+=1
             if self.setTopPlayer(playerName, deckHref, deckName, idTournament) == True:
                 deckName   = ''
                 playerName = ''
+
+    def getPlayerName(self, link, soup):
+        playerName = link.text
+        
+        # print("%s - %s" %(playerName, soup.original_encoding))
+        if (soup.original_encoding == 'cp850'):
+            name = playerName.encode('cp850')
+            playerName = name.decode(encoding="ISO-8859-1",errors="ignore")
+        if(soup.original_encoding == "windows-1250"):
+            name = playerName.encode('windows-1250')
+            playerName = name.decode(encoding="ISO-8859-1",errors="ignore")
+
+        return playerName
     
     # get players info and save on database
     def setTop8Players(self, soup):
@@ -93,7 +100,6 @@ class Top8:
             idPlayerInserted = item.savePlayer()
             item.setIdPlayer(idPlayerInserted[0].get('id'))
             self.saveDeck(item, idPlayerInserted[0].get('id'))
-
 
     def existItemPlayer(self, item, idPlayer):
         print('         - Players is on DB: %s - %s' %(item.getPlayerNum(),item.getPlayerName()))
