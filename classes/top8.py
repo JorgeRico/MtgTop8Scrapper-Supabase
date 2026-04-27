@@ -5,8 +5,9 @@ from functions.db import Db
 from data.tableNames import playerTable
 
 class Top8:
-    def __init__(self):
-        self.topPlayers = []
+    def __init__(self, idTournament):
+        self.idTournament = idTournament
+        self.topPlayers   = []
 
     # get list of players
     def getTopPlayers(self):
@@ -51,9 +52,9 @@ class Top8:
                 playerName = ''
     
     # get players info and save on database
-    def setTop8Players(self, soup, idTournament):
-        self.scrapTopPlayers(soup, "chosen_tr", idTournament)
-        self.scrapTopPlayers(soup, "hover_tr", idTournament)
+    def setTop8Players(self, soup):
+        self.scrapTopPlayers(soup, "chosen_tr", self.idTournament)
+        self.scrapTopPlayers(soup, "hover_tr", self.idTournament)
         self.savePlayers()
 
     # save deck
