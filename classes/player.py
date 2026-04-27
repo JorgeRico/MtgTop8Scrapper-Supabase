@@ -1,4 +1,4 @@
-from functions.db import Db
+from classes.db import Db
 from data.tableNames import playerTable
 
 class Player:
@@ -46,21 +46,22 @@ class Player:
         self.idPlayer = idPlayer
 
     # save player on DB
-    def savePlayer(self):
+    def savePlayer(self, idTournament):
         db   = Db()
 
         item = {
             "name"         : self.getPlayerName(),
             "position"     : self.getPlayerNum(),
-            "idTournament" : self.getPlayerTournament()
+            "idTournament" : idTournament
             # "deckHref"     : self.getDeckHref()
         }
 
         try:
             response = db.insert(playerTable, item)
 
-            return response.data
-        except Exception:
+            return response
+        except Exception as e:
+            print(f"Error occurred while saving player: {e}")
             return None
     
     # save player idDeck on DB

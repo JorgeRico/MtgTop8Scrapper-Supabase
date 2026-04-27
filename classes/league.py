@@ -1,4 +1,4 @@
-from functions.db import Db
+from classes.db import Db
 from data.tableNames import leagueTable
 
 class League:
@@ -16,11 +16,8 @@ class League:
     
     def getLeagueYear(self):
         return self.year
-
-    # save league on DB
-    def saveLeague(self):
-        db   = Db()
-
+    
+    def getLeagueITem(self):
         item = {
             "id"       : self.id,
             "name"     : self.name,
@@ -28,4 +25,9 @@ class League:
             "isLegacy" : self.isLegacy
         }
 
-        db.insert(leagueTable, item)
+        return item
+
+    # save league on DB
+    def saveLeague(self):
+        db = Db()
+        db.insert(leagueTable, self.getLeagueITem())

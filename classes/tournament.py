@@ -1,6 +1,7 @@
-from functions.db import Db
+from classes.db import Db
 from data.tableNames import tournamentTable
-from functions.functions import Scrapping
+from functions.scrapping import Scrapping
+from classes.mtgTop8 import MtgTop8
 
 class Tournament():
     def __init__(self, id, name, idLeague, date = "", idTournament = None, players = []):
@@ -17,7 +18,8 @@ class Tournament():
     
     def getSoupData(self):
         soup     = Scrapping()
-        soupData = soup.getSoup(soup.getEventUrl(self.id))
+        mtgtop8  = MtgTop8()
+        soupData = soup.getSoup(mtgtop8.getEventUrl(self.id))
         
         return soupData
     
@@ -83,9 +85,8 @@ class Tournament():
         # set extra tournament data
         self.setDate(textDate)
         self.setPlayers(textPlayers)
-        self.setTournamentIdFromDB()
-        # save on database
-        self.saveTournament()
+        if not self.setTournamentIdFromDB():
+            self.saveTournament()
     
     # save tournament on DB
     def saveTournament(self):
@@ -105,3 +106,6 @@ class Tournament():
 
         if len(idTournament) != 0:
             self.setIdTournament(idTournament[0].get('id'))
+            return True
+        
+        return False
