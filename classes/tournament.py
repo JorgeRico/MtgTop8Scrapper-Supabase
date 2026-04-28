@@ -3,11 +3,13 @@ from data.tableNames import tournamentTable
 
 class Tournament():
     def __init__(self, idTournament,name, idLeague, date = "", players = []):
+        # id from database
         self.id           = None
         self.name         = name
         self.date         = date
         self.idLeague     = idLeague
         self.players      = players
+        # old id from access data or id from scrapping
         self.idTournament = idTournament
 
     def setId(self, id):
@@ -67,7 +69,7 @@ class Tournament():
 
         return response
     
-    # get idTournament from DB
+    # get idTournament from DB and set id if exists
     def setTournamentIdFromDB(self):
         id = self.existsTournamentOnDB(self.idTournament)
 

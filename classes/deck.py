@@ -1,48 +1,16 @@
-from classes.card import Card
 from classes.db import Db
 from data.tableNames import deckTable, cardsTable, playerTable
-from functions.scrapping import Scrapping
 
 class Deck:
     def __init__(self):
-        self.cards = []
-        self.db    = Db()
-
-    # get list of cards on deck
-    def getDeckCards(self):
-        return self.cards
-    
-    def setCards(self, card):
-        self.cards.append(card)
-
-    # scrap deck info
-    def getDeck(self, idDeck, deckHref):
-        soup = Scrapping()
-        soup = soup.getSoup(deckHref)
-
-        for cards in soup.findAll('div', attrs={"class": 'deck_line hover_tr'}):
-            board = cards.get('id')[:2]
-
-            if cards.text[1] == ' ':
-                num  = cards.text[0]
-                name = cards.text[2:].strip()
-            if cards.text[2] == ' ':
-                num  = cards.text[:2]
-                name = cards.text[3:].strip()
-            
-            card = Card(num, name, idDeck, board, True)
-
-            self.setCards(card)
+        self.db = Db()
 
     # set deck on database
-    def setDeck(self, idDeck, deckHref, idPlayer, isMtgDecks):
+    def setDeck(self, idDeck, cards, idPlayer):
         # delete previous results before upload all deck
         self.deleteDeckCards(idDeck)
-        # scrap deck
-        if not isMtgDecks:
-            self.getDeck(idDeck, deckHref)
-            self.saveDeckCardsList()
 
+        self.saveDeckCardsList(cards)
         self.updateCardsLoaded(idDeck)
         self.updateDeckPlayer(idDeck, idPlayer)
 
@@ -54,8 +22,8 @@ class Deck:
         return response.data
 
     # save deck list on DB
-    def saveDeckCardsList(self):
-        for card in self.cards:
+    def saveDeckCardsList(self, cards):
+        for card in cards:
             self.db.insert(cardsTable, card.getCardItem())
 
     # save player idDeck on DB

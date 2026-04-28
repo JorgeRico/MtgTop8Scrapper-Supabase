@@ -30,7 +30,7 @@ class Player:
     def getPlayerDeck(self):
         return self.cards
     
-    def getPlayerTournament(self):
+    def getIdTournament(self):
         return self.idTournament
     
     def getDeckHref(self):
@@ -53,7 +53,6 @@ class Player:
             "name"         : self.getPlayerName(),
             "position"     : self.getPlayerNum(),
             "idTournament" : idTournament
-            # "deckHref"     : self.getDeckHref()
         }
 
         try:
@@ -78,10 +77,9 @@ class Player:
     # check if player exists on db
     def existsPlayerOnDB(self):
         db       = Db()
-        supabase = db.getSupabase()
 
         try:
-            response = supabase.table(playerTable).select('id, idDeck').eq('name', self.getPlayerName()).eq('position', self.getPlayerNum()).eq('idTournament', self.getPlayerTournament()).execute()
+            response = db.getSupabase().table(playerTable).select('id, idDeck').eq('name', self.getPlayerName()).eq('position', self.getPlayerNum()).eq('idTournament', self.getIdTournament()).execute()
 
             return response.data
         except Exception:
@@ -97,5 +95,3 @@ class Player:
             return response.data
         except Exception:
             return None
-    
-    

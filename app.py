@@ -5,7 +5,7 @@ if __name__ == "__main__":
     # lliga_catalana.tournament, lliga_minoria.tournament, lliga_valles.tournament
     # test_league.tournament
     tournaments = [
-        lliga_catalana.tournament, lliga_minoria.tournament, lliga_valles.tournament
+        test_league.tournament
     ]
     main = Main(tournaments)
     main.run()

@@ -6,10 +6,10 @@ from classes.websites.scryfall import Scryfall
 
 class Card:
     def __init__(self, num = None, name = None, idDeck = None, board = None, setImageAndCardType = False):
-        self.num      = num
-        self.name     = name
-        self.idDeck   = idDeck
-        self.board    = board
+        self.num    = num
+        self.name   = name
+        self.idDeck = idDeck
+        self.board  = board
 
         if setImageAndCardType:
             self.setCardTypeAndImage(name)
@@ -77,8 +77,7 @@ class Card:
     # Get empty imgUrl rows - supabase python has limit on select query - not group by
     def checkCardsImgUrls(self):
         db       = Db()
-        supabase = db.getSupabase()
-        response = supabase.table(cardsTable).select("name").filter('imgUrl','is', 'null').execute()
+        response = db.getSupabase().table(cardsTable).select("name").filter('imgUrl','is', 'null').execute()
 
         return response.data
     

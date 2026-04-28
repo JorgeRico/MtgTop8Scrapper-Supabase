@@ -1,7 +1,9 @@
 from functions.scrapping import Scrapping
-from classes.top8 import Top8
 from classes.player import Player
 from classes.card import Card
+from classes.tournament import Tournament
+from classes.deck import Deck
+from classes.top8 import Top8
 
 class MtgTop8:
     def __init__(self, idTournament):
@@ -9,10 +11,14 @@ class MtgTop8:
         self.id           = None
         self.idTournament = idTournament
         self.players      = []
-        self.cards        = []
+        # self.cards        = []
+        self.eventUrl     = self.setEventUrl(self.idTournament)
 
-    def getCards(self):
-        return self.cards
+    # def getCards(self):
+    #     return self.cards
+    
+    # def setCards(self, card):
+    #     self.cards.append(card)
     
     def setPlayers(self, player):
         self.players.append(player)
@@ -20,55 +26,68 @@ class MtgTop8:
     def getPlayers(self):
         return self.players
 
-    # tournament url
-    def getEventUrl(self, url):
+    # set tournament url
+    def setEventUrl(self, url):
         return self.baseurl + '?e=' + url + '&f=LE'
+    
+    # get tournament url
+    def getEventUrl(self):
+        return self.eventUrl
     
     # player deck url
     def getPlayerDeckUrl(self, url):
         return self.baseurl + url
     
+    # get soup data from url
     def getSoupData(self):
+        print('     * Url: %s' %(self.getEventUrl()))
         soup     = Scrapping()
-        soupData = soup.getSoup(self.getEventUrl(self.idTournament))
+        soupData = soup.getSoup(self.getEventUrl())
         
         return soupData
     
+    def getDateTournament(self, value):
+        textSplit      = value.split(' - ')
+        tournamentDate = textSplit[1]
+        
+        return tournamentDate
+    
+    def getNumPlayersTournament(self, value):
+        textSplit  = value.split(' - ')
+        numPlayers = textSplit[0].replace('players', '')
+
+        return numPlayers
+    
     # get data tournament from website - scrap mtgtop8
-    def getTournamentData(self, tournament, soup):
+    def getTournamentData(self, soup):
         for tournamentSoup in soup.findAll('div', attrs={"class": 'S14'}):
             num = 0
             for tournamentDivs in tournamentSoup.findAll('div'):
                 if num == 1:
                     if tournamentDivs.text is not None:
-                        text        = tournamentDivs.text
-                        textSplit   = text.split(' - ')
-                        textDate    = textSplit[1]
-                        textPlayers = textSplit[0].replace('players', '')
+                        text = tournamentDivs.text
                     break
                 num += 1
             break
-
-        # set extra tournament data
-        tournament.setDate(textDate)
-        tournament.setNumPlayers(textPlayers)
-        if not tournament.setTournamentIdFromDB():
-            tournament.saveTournament()
-
-    # save players and decks on db
-    def setTop8PlayersAndDecks(self, soup, id):
-        self.setTop8Players(soup)
-        top8 = Top8(id)
-        top8.savePlayers(self.getPlayers())
-        top8.setTop8PlayersDecks(self.getPlayers(), False)
+        
+        return text
 
     # get players info and save on database
-    def setTop8Players(self, soup):
-        self.scrapTopPlayers(soup, "chosen_tr")
-        self.scrapTopPlayers(soup, "hover_tr")
+    def getTop8Players(self, soup, dbIdTournament):
+        first_player = self.scrapTopPlayers(soup, "chosen_tr")
+        all_players = self.scrapTopPlayers(soup, "hover_tr")
+
+        all_players.insert(0, first_player[0])
+
+        for index, player in enumerate(all_players, 1):
+            item = Player(index, player['playerName'], player['deckHref'], dbIdTournament, player['deckName'])
+            self.setPlayers(item)
+
+        return self.players
 
     # scrap players
     def scrapTopPlayers(self, soup, className):
+        players = []
         for set in soup.findAll('div', attrs={"class": className}):
             num = 0
 
@@ -84,16 +103,19 @@ class MtgTop8:
                     num+=1
 
             if playerName != '' and deckHref != '' and deckName != '':
-                self.setTopPlayer(playerName, deckHref, deckName, self.id)
+                item = {
+                    'playerName' : playerName,
+                    'deckHref'   : self.getPlayerDeckUrl(deckHref),
+                    'deckName'   : deckName
+                }
+
+                players.append(item)
+
                 deckName   = ''
                 playerName = ''
-
-    def setTopPlayer(self, playerName, deckHref, deckName, idTournament):        
-        deckUrl = self.getPlayerDeckUrl(deckHref)
-        num     = len(self.players)
-        player  = Player(num+1, playerName, deckUrl, idTournament, deckName)
-
-        self.setPlayers(player)
+                deckHref   = ''
+        
+        return players
 
     def getPlayerName(self, link, soup):
         playerName = link.text
@@ -108,3 +130,75 @@ class MtgTop8:
             playerName = name.decode(encoding="ISO-8859-1", errors="ignore")
 
         return playerName
+
+    def getDeck(self, idDeck, deckHref):
+        soup  = Scrapping()
+        soup  = soup.getSoup(deckHref)
+        cards = []
+
+        for cardsData in soup.findAll('div', attrs={"class": 'deck_line hover_tr'}):
+            board = cardsData.get('id')[:2]
+
+            if cardsData.text[1] == ' ':
+                num  = cardsData.text[0]
+                name = cardsData.text[2:].strip()
+            if cardsData.text[2] == ' ':
+                num  = cardsData.text[:2]
+                name = cardsData.text[3:].strip()
+            
+            card = Card(num, name, idDeck, board, True)
+
+            cards.append(card)
+
+        return cards
+    
+    def run(self, name, idLeague):
+        soup = self.getSoupData()
+        data = self.getTournamentData(soup)
+
+        tournament = Tournament(self.idTournament, name, idLeague, True)
+        self.tournamentData(tournament, data)
+        print('       * Players:')
+        dataPlayers = self.tournamentDataPlayers(soup, tournament)
+        print('       * Decks:')
+        self.tournamentDataDecks(dataPlayers)
+
+        return tournament.getId()
+    
+    # common tournament data
+    def tournamentData(self, tournament, data):
+        dataDate       = self.getDateTournament(data)
+        dataNumPlayers = self.getNumPlayersTournament(data)
+
+        tournament.setDate(dataDate)
+        tournament.setNumPlayers(dataNumPlayers)
+
+        if not tournament.setTournamentIdFromDB():
+            tournament.saveTournament()
+
+    # players data + decknames
+    def tournamentDataPlayers(self, soup, tournament):
+        dataPlayers = self.getTop8Players(soup, tournament.getId())
+        
+        top8 = Top8()
+        top8.savePlayers(dataPlayers)
+        top8.setTop8PlayersIdDecks(dataPlayers)
+
+        return dataPlayers
+    
+    # player decks
+    def tournamentDataDecks(self, dataPlayers):
+        for item in dataPlayers:
+            deck   = Deck()
+            result = deck.playerHasIdDeckOnDB(item.idPlayer)
+
+            if not result[0].get('decks').get('cardsLoaded'):
+                print('         - Deck saving on DB . . .')
+                print('           --> %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
+                
+                cards = self.getDeck(item.getPlayerIdDeck(), item.getDeckHref())
+                deck.setDeck(item.getPlayerIdDeck(), cards, item.getIdPlayer())
+                
+                print('           --> Deck saved on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
+            else:
+                print('         - Deck is on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))

@@ -1,8 +1,7 @@
 from classes.deck import Deck
 
 class Top8:
-    def __init__(self, idTournament):
-        self.idTournament = idTournament
+    def __init__(self):
         self.topPlayers   = []
 
     # get list of players
@@ -14,7 +13,6 @@ class Top8:
 
     # save players on db
     def savePlayers(self, players):
-        print('       * Players:')
         for item in players:
             idPlayer = item.existsPlayerOnDB()
             
@@ -34,36 +32,17 @@ class Top8:
             
     def saveItemPlayer(self, item):
         print('         - Player saved on DB: %s - %s' %(item.getPlayerNum(), item.getPlayerName()))
-        idPlayerInserted = item.savePlayer(self.idTournament)
+        idPlayerInserted = item.savePlayer(item.getIdTournament())
         
-        deck = Deck()
         item.setIdPlayer(idPlayerInserted.data[0].get('id'))
-        deck.savePlayerDeck(item, idPlayerInserted.data[0].get('id'))
 
     def existItemPlayer(self, item, idPlayer):
-        print('         - Players is on DB: %s - %s' %(item.getPlayerNum(), item.getPlayerName()))
+        print('         - Player is on DB: %s - %s' %(item.getPlayerNum(), item.getPlayerName()))
         item.setIdPlayer(idPlayer[0].get('id'))
 
-    # top8 decks saved
-    def setTop8PlayersDecks(self, topPlayers, isMtgDecks=None):
-        print('       * Decks:')
-
+    # top8 id decks saved if is None
+    def setTop8PlayersIdDecks(self, topPlayers):
         deck = Deck()
-        for item in topPlayers:            
+        for item in topPlayers:    
             if item.idDeck is None:
                 deck.savePlayerDeck(item, item.idPlayer)
-            result = deck.playerHasIdDeckOnDB(item.idPlayer)
-            self.setLoadCards(result, item, isMtgDecks)
-            
-    # check if deck has cards loaded, if not load cards and update deck on db
-    def setLoadCards(self, result, item, isMtgDecks = False):
-        if result[0].get('decks').get('cardsLoaded') == False:
-            if not isMtgDecks:
-                deck = Deck()
-                deck.setDeck(result[0].get('idDeck'), item.deckHref, item.idPlayer, isMtgDecks)
-            print('         - Deck saved on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
-        else:
-            print('         - Deck is on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
-
-    def saveTop8Data(self, players):
-        self.savePlayers(players)
