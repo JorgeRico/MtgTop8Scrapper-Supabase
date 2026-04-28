@@ -11,9 +11,6 @@ class Main():
         for item in self.tournaments:
             print('   - Scrapping : %s' %(item['name']))
 
-            league = League(item['league'], item['name'], item['year'], item['isLegacy'])
-            league.saveLeague()
-            
             for id in item['ids']:
                 print('     * Scrapping tournament id: %s' %(id))
                 self.scrappingTournament(str(id), item['name'], item['league'], item['isMtgDecks'])
