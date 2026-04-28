@@ -11,6 +11,9 @@ class Deck:
     # get list of cards on deck
     def getDeckCards(self):
         return self.cards
+    
+    def setCards(self, card):
+        self.cards.append(card)
 
     # scrap deck info
     def getDeck(self, idDeck, deckHref):
@@ -29,17 +32,17 @@ class Deck:
             
             card = Card(num, name, idDeck, board, True)
 
-            self.cards.append(card)
-
-        # save entire deck
-        self.saveDeckCardsList()
+            self.setCards(card)
 
     # set deck on database
-    def setDeck(self, idDeck, deckHref, idPlayer):
+    def setDeck(self, idDeck, deckHref, idPlayer, isMtgDecks):
         # delete previous results before upload all deck
         self.deleteDeckCards(idDeck)
         # scrap deck
-        self.getDeck(idDeck, deckHref)
+        if not isMtgDecks:
+            self.getDeck(idDeck, deckHref)
+            self.saveDeckCardsList()
+
         self.updateCardsLoaded(idDeck)
         self.updateDeckPlayer(idDeck, idPlayer)
 

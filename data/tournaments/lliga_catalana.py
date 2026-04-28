@@ -8,9 +8,10 @@
 tournament_list = [ 83398, 80600, 78939, 81915 ]
 
 tournament = {
-    'league'   : 24,
-    'name'     : 'LCL Ingenio',
-    'ids'      : tournament_list,
-    'year'     : 2026,
-    'isLegacy' : 1
+    'league'     : 24,
+    'name'       : 'LCL Ingenio',
+    'ids'        : tournament_list,
+    'year'       : 2026,
+    'isLegacy'   : 1,
+    'isMtgDecks' : False
 }

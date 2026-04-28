@@ -2,7 +2,7 @@ from functions.scrapping import Scrapping
 from functions.helpers import Helpers
 from classes.db import Db
 from data.tableNames import cardsTable
-from classes.scryfall import Scryfall
+from classes.websites.scryfall import Scryfall
 
 class Card:
     def __init__(self, num = None, name = None, idDeck = None, board = None, setImageAndCardType = False):

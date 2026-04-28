@@ -8,9 +8,10 @@
 tournament_list = [ 14241 ]
 
 tournament = {
-    'league'   : 27,
-    'name'     : 'Test Tournament',
-    'ids'      : tournament_list,
-    'year'     : 2016,
-    'isLegacy' : 1
+    'league'     : 27,
+    'name'       : 'Test Tournament',
+    'ids'        : tournament_list,
+    'year'       : 2016,
+    'isLegacy'   : 1,
+    'isMtgDecks' : False
 }

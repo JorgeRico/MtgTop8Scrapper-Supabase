@@ -1,7 +1,7 @@
 from classes.league import League
 from classes.tournament import Tournament
-from classes.top8 import Top8
 from classes.card import Card
+from classes.websites.mtgTop8 import MtgTop8
  
 class Main():
     def __init__(self, tournaments):
@@ -16,17 +16,19 @@ class Main():
             
             for id in item['ids']:
                 print('     * Scrapping tournament id: %s' %(id))
-                self.scrappingTournament(str(id), item['name'], item['league'])
+                self.scrappingTournament(str(id), item['name'], item['league'], item['isMtgDecks'])
 
     # scrapping Tournament info and top 8 players
-    def scrappingTournament(self, id, name, idLeague):
-        tournament = Tournament(id, name, idLeague, True)
-        soup       = tournament.getSoupData()
-        tournament.getTournamentData(soup)
+    def scrappingTournament(self, idTournament, name, idLeague, isMtgDecks):
+        tournament = Tournament(idTournament, name, idLeague, True)
 
-        # top 8 players, decks and cards
-        top = Top8(tournament.getIdTournament())
-        top.setTop8PlayersAndDecks(soup)
+        if not isMtgDecks:
+            mtgTop8 = MtgTop8(idTournament)
+            soup = mtgTop8.getSoupData()
+            # get data
+            mtgTop8.getTournamentData(tournament, soup)
+            # top 8 players, decks and cards
+            mtgTop8.setTop8PlayersAndDecks(soup, tournament.getId())
 
     # update card image url
     def updateBlankImgUrls(self):
