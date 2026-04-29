@@ -11,14 +11,7 @@ class MtgTop8:
         self.id           = None
         self.idTournament = idTournament
         self.players      = []
-        # self.cards        = []
-        self.eventUrl     = self.setEventUrl(self.idTournament)
-
-    # def getCards(self):
-    #     return self.cards
-    
-    # def setCards(self, card):
-    #     self.cards.append(card)
+        self.eventUrl     = self.setEventUrl(idTournament)
     
     def setPlayers(self, player):
         self.players.append(player)
