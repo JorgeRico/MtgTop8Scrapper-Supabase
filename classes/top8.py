@@ -2,7 +2,7 @@ from classes.deck import Deck
 
 class Top8:
     def __init__(self):
-        self.topPlayers   = []
+        self.topPlayers = []
 
     # get list of players
     def getTopPlayers(self):
@@ -31,13 +31,13 @@ class Top8:
                 self.existItemPlayer(item, idPlayer)
             
     def saveItemPlayer(self, item):
-        print('         - Player saved on DB: %s - %s' %(item.getPlayerNum(), item.getPlayerName()))
+        print('         - Player saved on DB: %s | %s' %(item.getPlayerNum(), item.getPlayerName()))
         idPlayerInserted = item.savePlayer(item.getIdTournament())
         
         item.setIdPlayer(idPlayerInserted.data[0].get('id'))
 
     def existItemPlayer(self, item, idPlayer):
-        print('         - Player is on DB: %s - %s' %(item.getPlayerNum(), item.getPlayerName()))
+        print('         - Player is on DB: %s | %s' %(item.getPlayerNum(), item.getPlayerName()))
         item.setIdPlayer(idPlayer[0].get('id'))
 
     # top8 id decks saved if is None

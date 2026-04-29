@@ -1,6 +1,7 @@
 from classes.card import Card
 from classes.websites.mtgTop8 import MtgTop8
- 
+from classes.websites.mtgDecks import MtgDecks
+
 class Main():
     def __init__(self, tournaments):
         self.tournaments = tournaments
@@ -12,15 +13,19 @@ class Main():
             for id in item['ids']:
                 print('     * Scrapping tournament id: %s' %(id))
                 self.scrappingTournament(str(id), item['name'], item['league'], item['isMtgDecks'])
+                print('\n')
 
-        print('\n     * Scrapping Finished !!! :D\n')
+        print('     *** Scrapping Finished !!! :D ***\n')
 
     # scrapping Tournament info and top 8 players
     def scrappingTournament(self, idTournament, name, idLeague, isMtgDecks):
-
+        # mtgDecks or mtgTop8 depends on tournament info
         if not isMtgDecks:
             mtgTop8 = MtgTop8(idTournament)
             id      = mtgTop8.run(name, idLeague)
+        else:
+            mtgDecks = MtgDecks(idTournament)
+            id       = mtgDecks.run(name, idLeague)
 
         print('\n     * check on: https://mtg-stats.vercel.app/tournaments/%s' %id)
             

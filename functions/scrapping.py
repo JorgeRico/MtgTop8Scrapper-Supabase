@@ -7,13 +7,20 @@ import time
 
 class Scrapping:
     def __init__(self):
-        self.headers  = { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json' }
+        self.headers = { 
+            "User-Agent"      : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+            "Accept"          : "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language" : "en-US,en;q=0.5",
+            "Referer"         : "https://www.google.com/"
+        }
 
     # get soup
     def getSoup(self, url):
         try:
-            page = urllib.request.urlopen(url)
-            soup = BeautifulSoup(page, 'html.parser')
+            page = urllib.request.Request(url, headers=self.headers)
+            with urllib.request.urlopen(page) as response:
+                html = response.read()
+            soup = BeautifulSoup(html, 'html.parser')
             return soup
         except Exception as error:
             print(error)

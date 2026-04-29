@@ -21,6 +21,9 @@ class Tournament():
     def getIdTournament(self):
         return self.idTournament
     
+    def setIdTournament(self, idTournament):
+        self.idTournament = idTournament
+    
     def getName(self):
         return self.name
     
