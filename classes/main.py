@@ -5,6 +5,7 @@ from classes.websites.mtgDecks import MtgDecks
 class Main():
     def __init__(self, tournaments):
         self.tournaments = tournaments
+        self.vercelUrl   = "https://mtg-stats.vercel.app/tournaments/"
 
     def run(self):
         for item in self.tournaments:
@@ -27,7 +28,7 @@ class Main():
             mtgDecks = MtgDecks(idTournament)
             id       = mtgDecks.run(name, idLeague)
 
-        print('\n     * check on: https://mtg-stats.vercel.app/tournaments/%s' %id)
+        print('\n     * check on: %s%s' %(self.vercelUrl ,id))
             
     # update card image url
     def updateBlankImgUrls(self):
