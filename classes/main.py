@@ -1,6 +1,8 @@
 from classes.card import Card
 from classes.websites.mtgTop8 import MtgTop8
 from classes.websites.mtgDecks import MtgDecks
+from data.tableNames import tournamentTable
+from classes.db import Db
 
 class Main():
     def __init__(self, tournaments):
@@ -39,3 +41,15 @@ class Main():
         for item in result:
             print('    - Cards updated: %s' %item.get('name'))
             card.updateCardData(item.get('name'))
+
+    # update idTournament
+    # main scrapper = mtgTop8, but sometimes data is on mtgDecks before
+    # update idTournaments to mantain consistency
+    def updateZeroIdTournamentCreatedFromMtgDecks(self, idTournament):
+        db   = Db()
+        item = { 'idTournament': idTournament }
+
+        try:
+            db.update(tournamentTable, item, 'idTournament', 0)
+        except Exception:
+            return None
