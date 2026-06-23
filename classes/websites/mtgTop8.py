@@ -40,8 +40,11 @@ class MtgTop8:
         return soupData
     
     def getDateTournament(self, value):
-        textSplit      = value.split(' - ')
-        tournamentDate = textSplit[1]
+        if '-' in value:
+            textSplit      = value.split(' - ')
+            tournamentDate = textSplit[1]
+        else:
+            tournamentDate = value
         
         return tournamentDate
     

@@ -1,5 +1,6 @@
 import urllib
 import urllib.request
+import urllib.error
 from bs4 import BeautifulSoup
 import json
 import urllib3
@@ -22,8 +23,8 @@ class Scrapping:
                 html = response.read()
             soup = BeautifulSoup(html, 'html.parser')
             return soup
-        except Exception as error:
-            print(error)
+        except urllib.error.HTTPError as e:
+            print("Status:", e.code)
     
     # get soup on json format
     # for scryfall api

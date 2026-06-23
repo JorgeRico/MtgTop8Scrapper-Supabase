@@ -49,6 +49,10 @@ class Tournament():
         self.players = players
 
     def getTournamentItem(self):
+        # players not defined on website
+        if isinstance(self.players, str):
+            self.players = 0
+
         item = {
             "idTournament" : self.idTournament,
             "name"         : self.name,
