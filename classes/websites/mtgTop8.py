@@ -152,7 +152,7 @@ class MtgTop8:
         soup = self.getSoupData()
         data = self.getTournamentData(soup)
 
-        tournament = Tournament(self.idTournament, name, idLeague, True)
+        tournament = Tournament(self.idTournament, name, idLeague)
         self.tournamentData(tournament, data)
         print('       * Players:')
         dataPlayers = self.tournamentDataPlayers(soup, tournament)

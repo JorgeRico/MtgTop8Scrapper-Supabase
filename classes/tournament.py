@@ -2,7 +2,7 @@ from classes.db import Db
 from data.tableNames import tournamentTable
 
 class Tournament():
-    def __init__(self, idTournament,name, idLeague, date = "", players = []):
+    def __init__(self, idTournament,name, idLeague, date = "", players = [], isMtgDecks = False):
         # id from database
         self.id           = None
         self.name         = name
@@ -11,6 +11,11 @@ class Tournament():
         self.players      = players
         # old id from access data or id from scrapping
         self.idTournament = idTournament
+        # id from mtgdecks website if exists
+        if isMtgDecks:
+            self.idTournamentMtgDecks = idTournament
+        else:
+            self.idTournamentMtgDecks = None
 
     def setId(self, id):
         self.id = id
@@ -53,14 +58,34 @@ class Tournament():
         if isinstance(self.players, str):
             self.players = 0
 
-        item = {
-            "idTournament" : self.idTournament,
-            "name"         : self.name,
-            "date"         : self.date,
-            "idLeague"     : self.idLeague,
-            "players"      : self.players
-        }
+        if self.idTournamentMtgDecks is not None:
+            item = self.mtgDeckItem()
+        else:
+            item = self.normalDeckItem()
 
+        return item
+    
+    def normalDeckItem(self):
+        item = {
+                "idTournament" : self.idTournament,
+                "name"         : self.name,
+                "date"         : self.date,
+                "idLeague"     : self.idLeague,
+                "players"      : self.players
+            }
+        
+        return item
+    
+    def mtgDeckItem(self):
+        item = {
+            "idTournament"         : self.idTournamentMtgDecks,
+            "name"                 : self.name,
+            "date"                 : self.date,
+            "idLeague"             : self.idLeague,
+            "players"              : self.players,
+            "idTournamentMtgDecks" : self.idTournamentMtgDecks
+        }
+        
         return item
     
     # save tournament on DB
@@ -85,3 +110,12 @@ class Tournament():
             return True
         
         return False
+    
+    def updateMtgDecksIdTournament(self):
+        db   = Db()
+        item = { 'idTournamentMtgDecks': self.idTournamentMtgDecks }
+
+        try:
+            db.update(tournamentTable, item, 'idTournament', self.idTournament)
+        except Exception:
+            return None

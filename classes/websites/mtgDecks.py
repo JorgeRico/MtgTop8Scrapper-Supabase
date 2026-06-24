@@ -6,6 +6,7 @@ from data.tournaments import lliga_valles
 from classes.deck import Deck
 from classes.card import Card
 import time
+import sys
 
 class MtgDecks:
     def __init__(self, idTournament):
@@ -34,7 +35,7 @@ class MtgDecks:
         soup = self.getSoupData()
         data = self.getTournamentData(soup)
 
-        tournament = Tournament(self.idTournament, name, idLeague, True)
+        tournament = Tournament(self.idTournament, name, idLeague, isMtgDecks = True)
         self.tournamentData(tournament, data)
         print('       * Players:')
         dataPlayers = self.tournamentDataPlayers(soup, tournament)
@@ -85,6 +86,8 @@ class MtgDecks:
         
         if not tournament.setTournamentIdFromDB():
             tournament.saveTournament()
+        else:
+            tournament.updateMtgDecksIdTournament()
 
     def getDateTournament(self, value):
         tournamentDate = value[4].split('-')
