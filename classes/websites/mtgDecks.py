@@ -5,7 +5,7 @@ from classes.top8 import Top8
 from data.tournaments import lliga_valles
 from classes.deck import Deck
 from classes.card import Card
-import sys
+import time
 
 class MtgDecks:
     def __init__(self, idTournament):
@@ -185,6 +185,8 @@ class MtgDecks:
 
     def getDeck(self, idDeck, deckHref):
         soup  = Scrapping()
+        # add delay to bypass blocks
+        time.sleep(2)
         soup  = soup.getSoup(deckHref)
         cards = []
         

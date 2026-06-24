@@ -15,16 +15,33 @@ class Scrapping:
             "Referer"         : "https://www.google.com/"
         }
 
+        self.mtgDecksHeaders = { 
+            "User-Agent"      : "MyMTGResearchBot/1.0",
+            "Accept"          : "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language" : "en-US,en;q=0.5",
+        }
+
     # get soup
     def getSoup(self, url):
         try:
-            page = urllib.request.Request(url, headers=self.headers)
-            with urllib.request.urlopen(page) as response:
-                html = response.read()
-            soup = BeautifulSoup(html, 'html.parser')
-            return soup
+            return self.getBeautifulSoupData(url, self.headers)
         except urllib.error.HTTPError as e:
             print("Status:", e.code)
+            if e.code == 403:
+                print("Cloudfare - Blocked connection - change headers")
+
+                return self.getBeautifulSoupData(url, self.mtgDecksHeaders)
+    
+    # get soup data from url
+    def getBeautifulSoupData(self, url, headers):
+        page = urllib.request.Request(url, headers=headers)
+
+        with urllib.request.urlopen(page) as response:
+            html = response.read()
+
+        soup = BeautifulSoup(html, 'html.parser')
+
+        return soup
     
     # get soup on json format
     # for scryfall api

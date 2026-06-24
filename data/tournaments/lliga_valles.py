@@ -10,7 +10,7 @@ tournament_list_mtgtop8  = [ 86604 , 84574 , 83134  , 81664 ]
 tournament_list_mtgdecks = [ 254859, 247046, 241991 , 237093 ]
 
 # this league sometimes has more players loaded on mtgdecks website
-isMtgDecks = True
+isMtgDecks = False
 
 tournament = {
     'league'     : 26,
