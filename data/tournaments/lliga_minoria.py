@@ -5,12 +5,12 @@
 # IMPORTANT :
 # current league needs to be changed manually on DB when new season starts
 # ########################################################################
-tournament_list = [ 85971, 84058, 82581, 81166, 79359 ]
+tournament_list = [ 87324, 85971, 84058, 82581, 81166, 79359 ]
 
 tournament = {
     'league'     : 25,
     'name'       : 'Lliga Minoria',
-    'ids'        :  tournament_list,
+    'ids'        : tournament_list,
     'year'       : 2026,
     'isLegacy'   : 1,
     'isMtgDecks' : False
