@@ -55,7 +55,10 @@ class Tournament():
 
     def getTournamentItem(self):
         # players not defined on website
-        if isinstance(self.players, str):
+        try:
+            if not isinstance(int(self.players), int):
+                self.players = int(self.players)
+        except Exception:
             self.players = 0
 
         if self.idTournamentMtgDecks is not None:
