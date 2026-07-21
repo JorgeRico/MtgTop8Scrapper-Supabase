@@ -5,7 +5,7 @@
 # IMPORTANT :
 # current league needs to be changed manually on DB when new season starts
 # ########################################################################
-tournament_list = [ 87324, 85971, 84058, 82581, 81166, 79359 ]
+tournament_list = [ 88444, 87324, 85971, 84058, 82581, 81166, 79359 ]
 
 tournament = {
     'league'     : 25,
