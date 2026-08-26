@@ -3,7 +3,7 @@ from classes.main import Main
 
 if __name__ == "__main__":
     tournaments = [
-        lliga_valles.tournament
+        lliga_catalana.tournament
     ]
     main = Main(tournaments)
     main.run()
