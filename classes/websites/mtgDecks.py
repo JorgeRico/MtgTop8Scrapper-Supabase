@@ -7,6 +7,7 @@ from classes.deck import Deck
 from classes.card import Card
 from functions.helpers import Helpers
 import time
+import sys
 
 class MtgDecks:
     def __init__(self, idTournament, isArrayLenEqual):
@@ -83,9 +84,9 @@ class MtgDecks:
         # mtgDecks vs mtgTop8 tournament id
         try:
             if self.getIsArrayLenEqual() is True:
-                idx = lliga_valles.tournament_list_mtgdecks.index(int(tournament.getIdTournament()))
-                tournament.setIdTournament(lliga_valles.tournament_list_mtgtop8[idx])
+                self.checkTournamentArrayIds(tournament)
             else:
+                # exception for lliga del valles - mtgdecks has more tournaments than mtgtop8 - only if None is forgot on mtgtop8 array
                 tournament.setIdTournament(tournament.getIdTournament())
         except ValueError:
             print('******* tournament VS id value error *******')
@@ -97,6 +98,16 @@ class MtgDecks:
         else:
             print(Helpers.ORANGE + '     * Tournament is on DB: %s | %s' %(tournament.getIdTournament(), tournament.getName()) + Helpers.RESET)
             tournament.updateMtgDecksIdTournament()
+
+    def checkTournamentArrayIds(self, tournament):
+        idTournament = tournament.getIdTournament()
+        idx = lliga_valles.tournament_list_mtgdecks.index(int(idTournament))
+
+        # exception for lliga del valles - mtgdecks has more tournaments than mtgtop8
+        if lliga_valles.tournament_list_mtgtop8[idx] is None:
+            tournament.setIdTournament(idTournament)
+        else:
+            tournament.setIdTournament(lliga_valles.tournament_list_mtgtop8[idx])
 
     def getDateTournament(self, value):
         tournamentDate = value[4].split('-')

@@ -4,21 +4,22 @@ from classes.websites.mtgDecks import MtgDecks
 from data.tableNames import tournamentTable
 from classes.db import Db
 from functions.helpers import Helpers
-
+import sys
 class Main():
     def __init__(self, tournaments):
         self.tournaments = tournaments
         self.vercelUrl   = "https://mtg-stats.vercel.app/tournaments/"
 
     def run(self):
-        for item in self.tournaments:
-            print('   - Scrapping : %s' %(item['name']))
+        item = self.tournaments[0]
+        print('   - Scrapping : %s' %(item['name']))
 
-            for id in item['ids']:
+        for id in self.tournaments[0]['ids']:
+            if id is not None:
                 print(Helpers.YELLOW + '     * Scrapping tournament id: %s' %(id) + Helpers.RESET)
                 self.scrappingTournament(str(id), item)
 
-                # exception only for lliga del valles
+                # exception only for lliga del valles - only if arrays have different lengths
                 if item['isMtgDecks'] is True and item['isArrayLenEqual'] is False:
                     print(Helpers.RED + '\n     *** LLV exception - Tournament Array items with different lengths !!!' + Helpers.RESET)
                     print(Helpers.RED + '     *** ONLY the first mtgdecks tournament is checked !!! \n' + Helpers.RESET)
