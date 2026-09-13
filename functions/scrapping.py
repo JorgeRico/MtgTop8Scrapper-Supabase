@@ -26,10 +26,10 @@ class Scrapping:
         try:
             return self.getBeautifulSoupData(url, self.headers)
         except urllib.error.HTTPError as e:
-            print("Status:", e.code)
+            print("           --> Status:", e.code)
             if e.code == 403:
-                print("Cloudfare - Blocked connection - change headers")
-
+                print("           --> Cloudfare - Blocked connection - change headers")
+                print("           --> Retrying with other headers . . . ")
                 return self.getBeautifulSoupData(url, self.mtgDecksHeaders)
     
     # get soup data from url

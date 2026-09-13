@@ -3,6 +3,7 @@ from classes.websites.mtgTop8 import MtgTop8
 from classes.websites.mtgDecks import MtgDecks
 from data.tableNames import tournamentTable
 from classes.db import Db
+from functions.helpers import Helpers
 
 class Main():
     def __init__(self, tournaments):
@@ -14,21 +15,27 @@ class Main():
             print('   - Scrapping : %s' %(item['name']))
 
             for id in item['ids']:
-                print('     * Scrapping tournament id: %s' %(id))
-                self.scrappingTournament(str(id), item['name'], item['league'], item['isMtgDecks'])
+                print(Helpers.YELLOW + '     * Scrapping tournament id: %s' %(id) + Helpers.RESET)
+                self.scrappingTournament(str(id), item)
+
+                # exception only for lliga del valles
+                if item['isMtgDecks'] is True and item['isArrayLenEqual'] is False:
+                    print(Helpers.RED + '\n     *** LLV exception - Tournament Array items with different lengths !!!' + Helpers.RESET)
+                    print(Helpers.RED + '     *** ONLY the first mtgdecks tournament is checked !!! \n' + Helpers.RESET)
+                    break
                 print('\n')
 
-        print('     *** Scrapping Finished !!! :D ***\n')
+        print(Helpers.GREEN + '     *** Scrapping Finished !!! :D ***\n' + Helpers.RESET)
 
     # scrapping Tournament info and top 8 players
-    def scrappingTournament(self, idTournament, name, idLeague, isMtgDecks):
+    def scrappingTournament(self, idTournament, item):
         # mtgDecks or mtgTop8 depends on tournament info
-        if not isMtgDecks:
+        if not item['isMtgDecks']:
             mtgTop8 = MtgTop8(idTournament)
-            id      = mtgTop8.run(name, idLeague)
+            id      = mtgTop8.run(item['name'], item['league'])
         else:
-            mtgDecks = MtgDecks(idTournament)
-            id       = mtgDecks.run(name, idLeague)
+            mtgDecks = MtgDecks(idTournament, item['isArrayLenEqual'])
+            id       = mtgDecks.run(item['name'], item['league'])
 
         print('\n     * check on: %s%s' %(self.vercelUrl ,id))
             

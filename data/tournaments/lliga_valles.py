@@ -7,16 +7,17 @@
 # ########################################################################
 # mantain array order relation
 tournament_list_mtgtop8  = [ 89082,  86604 , 84574 , 83134  , 81664 ]
-tournament_list_mtgdecks = [ 263823, 254859, 247046, 241991 , 237093 ]
+tournament_list_mtgdecks = [ 269392, 263823, 254859, 247046, 241991 , 237093 ]
 
 # this league sometimes has more players loaded on mtgdecks website
-isMtgDecks = False
+isMtgDecks = True
 
 tournament = {
-    'league'     : 26,
-    'name'       : 'Lliga del Valles',
-    'ids'        : tournament_list_mtgdecks if isMtgDecks else tournament_list_mtgtop8,
-    'year'       : 2026,
-    'isLegacy'   : 1,
-    'isMtgDecks' : isMtgDecks
+    'league'          : 26,
+    'name'            : 'Lliga del Valles',
+    'ids'             : tournament_list_mtgdecks if isMtgDecks else tournament_list_mtgtop8,
+    'year'            : 2026,
+    'isLegacy'        : 1,
+    'isMtgDecks'      : isMtgDecks,
+    'isArrayLenEqual' : True if len(tournament_list_mtgdecks) == len(tournament_list_mtgtop8) else False
 }

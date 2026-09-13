@@ -4,6 +4,7 @@ from classes.card import Card
 from classes.tournament import Tournament
 from classes.deck import Deck
 from classes.top8 import Top8
+from functions.helpers import Helpers
 
 class MtgTop8:
     def __init__(self, idTournament):
@@ -189,12 +190,12 @@ class MtgTop8:
             result = deck.playerHasIdDeckOnDB(item.idPlayer)
 
             if not result[0].get('decks').get('cardsLoaded'):
-                print('         - Deck saving on DB . . .')
+                print(Helpers.YELLOW + '         - Deck saving on DB . . .' + Helpers.RESET)
                 print('           --> %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
                 
                 cards = self.getDeck(item.getPlayerIdDeck(), item.getDeckHref())
                 deck.setDeck(item.getPlayerIdDeck(), cards, item.getIdPlayer())
                 
-                print('           --> Deck saved on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
+                print(Helpers.GREEN + '           --> Deck saved on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')) + Helpers.RESET)
             else:
-                print('         - Deck is on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')))
+                print(Helpers.ORANGE + '         - Deck is on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name'))) + Helpers.RESET

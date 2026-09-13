@@ -1,6 +1,12 @@
 import unidecode
 
 class Helpers:
+    RED    = '\033[91m'
+    GREEN  = '\033[92m'
+    RESET  = '\033[0m'
+    YELLOW = '\033[93m'
+    ORANGE = '\033[38;5;208m'
+
     # extrange names
     def convertCardName(self, cardName):
         cardName = unidecode.unidecode(cardName)

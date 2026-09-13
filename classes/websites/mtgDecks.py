@@ -5,16 +5,17 @@ from classes.top8 import Top8
 from data.tournaments import lliga_valles
 from classes.deck import Deck
 from classes.card import Card
+from functions.helpers import Helpers
 import time
-import sys
 
 class MtgDecks:
-    def __init__(self, idTournament):
-        self.baseurl      = 'https://mtgdecks.net/Legacy'
-        self.id           = None
-        self.idTournament = idTournament
-        self.players      = []
-        self.eventUrl     = self.setEventUrl(idTournament)
+    def __init__(self, idTournament, isArrayLenEqual):
+        self.baseurl         = 'https://mtgdecks.net/Legacy'
+        self.id              = None
+        self.idTournament    = idTournament
+        self.players         = []
+        self.eventUrl        = self.setEventUrl(idTournament)
+        self.isArrayLenEqual = isArrayLenEqual
  
     # event mtgdecks url
     def setEventUrl(self, id):
@@ -25,6 +26,9 @@ class MtgDecks:
     
     def setPlayers(self, player):
         self.players.append(player)
+
+    def getIsArrayLenEqual(self):
+        return self.isArrayLenEqual
     
     # player deck url
     def getPlayerDeckUrl(self, url):
@@ -78,15 +82,20 @@ class MtgDecks:
 
         # mtgDecks vs mtgTop8 tournament id
         try:
-            idx = lliga_valles.tournament_list_mtgdecks.index(int(tournament.getIdTournament()))
-            tournament.setIdTournament(lliga_valles.tournament_list_mtgtop8[idx])
+            if self.getIsArrayLenEqual() is True:
+                idx = lliga_valles.tournament_list_mtgdecks.index(int(tournament.getIdTournament()))
+                tournament.setIdTournament(lliga_valles.tournament_list_mtgtop8[idx])
+            else:
+                tournament.setIdTournament(tournament.getIdTournament())
         except ValueError:
             print('******* tournament VS id value error *******')
             pass
         
         if not tournament.setTournamentIdFromDB():
+            print('     * Saving tournament on DB . . .')
             tournament.saveTournament()
         else:
+            print(Helpers.ORANGE + '     * Tournament is on DB: %s | %s' %(tournament.getIdTournament(), tournament.getName()) + Helpers.RESET)
             tournament.updateMtgDecksIdTournament()
 
     def getDateTournament(self, value):
@@ -176,15 +185,15 @@ class MtgDecks:
             result = deck.playerHasIdDeckOnDB(item.idPlayer)
 
             if not result[0].get('decks').get('cardsLoaded'):
-                print('         - Deck saving on DB . . .')
+                print(Helpers.YELLOW + '         - Deck saving on DB . . .' + Helpers.RESET)
                 print('           --> %s | %s' %(result[0].get('decks').get('name'), result[0].get('name')))
                 
                 cards = self.getDeck(item.getPlayerIdDeck(), item.getDeckHref())
                 deck.setDeck(item.getPlayerIdDeck(), cards, item.getIdPlayer())
                 
-                print('           --> Deck saved on DB: %s | %s' %(result[0].get('decks').get('name'), result[0].get('name')))
+                print(Helpers.GREEN + '           --> Deck saved on DB: %s | %s' %(result[0].get('decks').get('name'), result[0].get('name')) + Helpers.RESET)
             else:
-                print('         - Deck is on DB: %s | %s' %(result[0].get('decks').get('name'), result[0].get('name')))
+                print(Helpers.ORANGE + '         - Deck is on DB: %s | %s' %(result[0].get('decks').get('name'), result[0].get('name')) + Helpers.RESET)
 
     def getDeck(self, idDeck, deckHref):
         soup  = Scrapping()

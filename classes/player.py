@@ -76,10 +76,10 @@ class Player:
 
     # check if player exists on db
     def existsPlayerOnDB(self):
-        db       = Db()
+        db = Db()
 
         try:
-            response = db.getSupabase().table(playerTable).select('id, idDeck').eq('name', self.getPlayerName()).eq('position', self.getPlayerNum()).eq('idTournament', self.getIdTournament()).execute()
+            response = db.getSupabase().table(playerTable).select('id, idDeck').eq('name', self.getPlayerName()).eq('idTournament', self.getIdTournament()).execute()
 
             return response.data
         except Exception:

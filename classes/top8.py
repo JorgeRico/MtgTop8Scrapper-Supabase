@@ -1,4 +1,5 @@
 from classes.deck import Deck
+from functions.helpers import Helpers
 
 class Top8:
     def __init__(self):
@@ -31,13 +32,14 @@ class Top8:
                 self.existItemPlayer(item, idPlayer)
             
     def saveItemPlayer(self, item):
-        print('         - Player saved on DB: %s | %s' %(item.getPlayerNum(), item.getPlayerName()))
+        print(Helpers.GREEN + '         - Player saved on DB: %s | %s' %(item.getPlayerNum(), item.getPlayerName()) + Helpers.RESET)
         idPlayerInserted = item.savePlayer(item.getIdTournament())
         
         item.setIdPlayer(idPlayerInserted.data[0].get('id'))
 
     def existItemPlayer(self, item, idPlayer):
-        print('         - Player is on DB: %s | %s' %(item.getPlayerNum(), item.getPlayerName()))
+        print(Helpers.ORANGE + '         - Player is on DB: %s | %s' %(item.getPlayerNum(), item.getPlayerName()) + Helpers.RESET)
+
         item.setIdPlayer(idPlayer[0].get('id'))
 
     # top8 id decks saved if is None

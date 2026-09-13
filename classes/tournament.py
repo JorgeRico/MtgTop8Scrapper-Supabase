@@ -1,5 +1,6 @@
 from classes.db import Db
 from data.tableNames import tournamentTable
+from functions.helpers import Helpers
 
 class Tournament():
     def __init__(self, idTournament,name, idLeague, date = "", players = [], isMtgDecks = False):
@@ -96,6 +97,8 @@ class Tournament():
         db     = Db()
         result = db.insert(tournamentTable, self.getTournamentItem())
         self.setId(result.data[0].get('id'))
+        print(Helpers.GREEN + '     * Tournament saved on DB: %s | %s' %(self.getIdTournament(), self.getName()) + Helpers.RESET)
+
     
     # check if exists tournament
     def existsTournamentOnDB(self, idTournament):
