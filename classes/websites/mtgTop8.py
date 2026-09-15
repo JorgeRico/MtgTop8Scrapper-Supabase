@@ -198,4 +198,4 @@ class MtgTop8:
                 
                 print(Helpers.GREEN + '           --> Deck saved on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name')) + Helpers.RESET)
             else:
-                print(Helpers.ORANGE + '         - Deck is on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name'))) + Helpers.RESET
+                print(Helpers.ORANGE + '         - Deck is on DB: %s - %s' %(result[0].get('decks').get('name'), result[0].get('name'))  + Helpers.RESET)
