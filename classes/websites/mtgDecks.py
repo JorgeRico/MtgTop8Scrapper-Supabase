@@ -110,7 +110,11 @@ class MtgDecks:
             tournament.setIdTournament(lliga_valles.tournament_list_mtgtop8[idx])
 
     def getDateTournament(self, value):
-        tournamentDate = value[4].split('-')
+        # array bug - new change on website
+        if '-' in value[4]:
+            tournamentDate = value[4].split('-')
+        if '-' in value[5]:
+            tournamentDate = value[5].split('-')
 
         day   = tournamentDate[2]
         month = tournamentDate[1]
