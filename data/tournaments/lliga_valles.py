@@ -6,11 +6,11 @@
 # current league needs to be changed manually on DB when new season starts
 # ########################################################################
 # mantain array order relation
-tournament_list_mtgtop8  = [ None  , 89082 ,  86604, 84574 , 83134  , 81664 ]
-tournament_list_mtgdecks = [ 269392, 263823, 254859, 247046, 241991 , 237093 ]
+tournament_list_mtgtop8  = [ 92500 , None  , 89082 ,  86604, 84574 , 83134  , 81664 ]
+tournament_list_mtgdecks = [ 275200, 269392, 263823, 254859, 247046, 241991 , 237093 ]
 
 # this league sometimes has more players loaded on mtgdecks website
-isMtgDecks = True
+isMtgDecks = False
 
 tournament = {
     'league'          : 26,
